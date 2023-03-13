@@ -26,12 +26,24 @@ function ScoreState:update(dt)
 end
 
 function ScoreState:render()
+    -- define the trophy image according to the score
+    if self.score > 3 then
+        trophy = love.graphics.newImage('trophy1.png')
+    elseif self.score > 2 then
+        trophy = love.graphics.newImage('trophy2.png')
+    elseif self.score > 1 then
+        trophy = love.graphics.newImage('trophy3.png')
+    else
+        trophy = love.graphics.newImage('trophy4.png')
+    end
+
     -- simply render the score to the middle of the screen
     love.graphics.setFont(flappyFont)
     love.graphics.printf('Oof! You lost!', 0, 64, VIRTUAL_WIDTH, 'center')
 
     love.graphics.setFont(mediumFont)
     love.graphics.printf('Score: ' .. tostring(self.score), 0, 100, VIRTUAL_WIDTH, 'center')
+    love.graphics.draw(trophy, VIRTUAL_WIDTH / 2 - 50, 99, 0, 0.03, 0.03)
 
     love.graphics.printf('Press Enter to Play Again!', 0, 160, VIRTUAL_WIDTH, 'center')
 end

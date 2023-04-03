@@ -28,6 +28,9 @@ function Ball:init(skin)
     -- this will effectively be the color of our ball, and we will index
     -- our table of Quads relating to the global block texture using this
     self.skin = skin
+
+    -- status of live
+    self.inPlay = true
 end
 
 --[[
@@ -60,6 +63,17 @@ function Ball:reset()
     self.dx = 0
     self.dy = 0
 end
+
+--[[
+    Add new one with x, y, dx, dy.
+]]
+function Ball:add(x, y, dx, dy)
+    self.x = x
+    self.y = y
+    self.dx = dx
+    self.dy = dy
+end
+
 
 function Ball:update(dt)
     self.x = self.x + self.dx * dt

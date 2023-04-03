@@ -23,6 +23,9 @@ ALTERNATE = 2       -- alternate colors
 SKIP = 3            -- skip every other block
 NONE = 4            -- no blocks this row
 
+-- item number
+ITEM_QUANTITY = 30
+
 LevelMaker = Class{}
 
 --[[
@@ -32,6 +35,7 @@ LevelMaker = Class{}
 ]]
 function LevelMaker.createMap(level)
     local bricks = {}
+    local items = {}
 
     -- randomly choose the number of rows
     local numRows = math.random(1, 5)
@@ -95,6 +99,19 @@ function LevelMaker.createMap(level)
                 y * 16                  -- just use y * 16, since we need top padding anyway
             )
 
+            i = Item(
+                -- x-coordinate
+                (x-1)                   -- decrement x by 1 because tables are 1-indexed, coords are 0
+                * 32                    -- multiply by 32, the brick width
+                + 8                     -- the screen should have 8 pixels of padding; we can fit 13 cols + 16 pixels total
+                + (13 - numCols) * 16   -- left-side padding for when there are fewer than 13 columns
+                + 8,         
+                -- y-coordinate
+                y * 16,                  -- just use y * 16, since we need top padding anyway
+                9
+            )
+
+
             -- if we're alternating, figure out which color/tier we're on
             if alternatePattern and alternateFlag then
                 b.color = alternateColor1
@@ -113,7 +130,9 @@ function LevelMaker.createMap(level)
             end 
 
             table.insert(bricks, b)
+            table.insert(items, i)
 
+        
             -- Lua's version of the 'continue' statement
             ::continue::
         end
@@ -122,7 +141,15 @@ function LevelMaker.createMap(level)
     -- in the event we didn't generate any bricks, try again
     if #bricks == 0 then
         return self.createMap(level)
-    else
-        return bricks
     end
+
+    -- hide items behind bricks
+    local brick_quantity = #bricks
+    ITEM_QUANTITY = math.min(brick_quantity, ITEM_QUANTITY)
+    local itemSubset = PickRandomItems(brick_quantity, ITEM_QUANTITY)
+    for i = 1, ITEM_QUANTITY do
+        items[itemSubset[i]].inPlay = true
+    end
+
+    return bricks, items
 end

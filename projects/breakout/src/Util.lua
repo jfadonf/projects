@@ -125,3 +125,42 @@ function GenerateQuadsBalls(atlas)
 
     return quads
 end
+
+--[[
+    This function is specifically made to piece out the items from the
+    sprite sheet. 
+]]
+function GenerateQuadsItems(atlas)
+    local x = 0 
+    local y = 192 
+
+    local counter = 1
+    local quads = {}
+
+    for i = 0, 9 do
+        quads[counter] = love.graphics.newQuad(x, y, 16, 16, atlas:getDimensions())
+        x = x + 16
+        counter = counter + 1
+    end
+
+    return quads
+end
+
+--[[
+    This function will return certain number items of a table randomly and uniquely
+]]
+function PickRandomItems(itemsQuantityOfSet, itemsQuantityOfSubset)
+    local table1 = {}
+    local result = {}
+
+    for i = 1, itemsQuantityOfSet do
+        table1[i] = i
+    end
+
+    for i = 1, itemsQuantityOfSubset do
+        local j = math.random(#table1)
+        table.insert(result, j) 
+        table.remove(table1, j)
+    end
+    return result
+end

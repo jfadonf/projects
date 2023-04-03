@@ -20,3 +20,7 @@ VIRTUAL_HEIGHT = 243
 
 -- paddle movement speed
 PADDLE_SPEED = 200
+
+
+-- item drop speed
+ITEM_DROP_SPEED = 100

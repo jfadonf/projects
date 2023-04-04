@@ -28,7 +28,7 @@ require 'src/LevelMaker'
 require 'src/Paddle'
 
 -- the items which drop from the KO brick
-require 'src/Item'
+require 'src/Powerup'
 
 
 -- a basic StateMachine class which will allow us to transition to and from

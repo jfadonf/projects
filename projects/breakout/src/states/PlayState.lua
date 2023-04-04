@@ -23,7 +23,7 @@ PlayState = Class{__includes = BaseState}
 function PlayState:enter(params)
     self.paddle = params.paddle
     self.bricks = params.bricks
-    self.items = params.items
+    self.powerups = params.powerups
     self.health = params.health
     self.score = params.score
     self.highScores = params.highScores
@@ -92,9 +92,9 @@ function PlayState:update(dt)
                 -- trigger the brick's hit function, which removes it from play
                 brick:hit()
 
-                -- trigger the item to drop
+                -- trigger the powerup to drop
                 if not brick.inPlay then
-                    self.items[k].active = true
+                    self.powerups[k].active = true
                 end
 
                 -- if we have enough points, recover a point of health
@@ -207,7 +207,7 @@ function PlayState:update(dt)
             gStateMachine:change('serve', {
                 paddle = self.paddle,
                 bricks = self.bricks,
-                items = self.items,
+                powerups = self.powerups,
                 health = self.health,
                 score = self.score,
                 highScores = self.highScores,
@@ -217,12 +217,12 @@ function PlayState:update(dt)
         end
     end
 
-    -- for rendering items
-    for k, item in pairs(self.items) do
-        item:update(dt)
-        -- check if the paddle touched the item
-        if item.inPlay and item:collide(self.paddle) then
-            item.inPlay = false
+    -- for rendering powerups
+    for k, powerup in pairs(self.powerups) do
+        powerup:update(dt)
+        -- check if the paddle touched the powerup
+        if powerup.inPlay and powerup:collide(self.paddle) then
+            powerup.inPlay = false
             local newBall1 = Ball(math.random(7))
             newBall1:add(self.balls[1].x, self.balls[1].y, self.balls[1].dx-20, self.balls[1].dy-5)
             local newBall2 = Ball(math.random(7))
@@ -253,10 +253,10 @@ function PlayState:render()
         brick:renderParticles()
     end
 
-    -- render all items
-    for k, item in pairs(self.items) do
-        if item.inPlay then
-            item:render()
+    -- render all powerups
+    for k, powerup in pairs(self.powerups) do
+        if powerup.active and powerup.inPlay then
+            powerup:render()
         end
     end
 

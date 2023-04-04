@@ -50,7 +50,7 @@ function PaddleSelectState:update(dt)
         gStateMachine:change('serve', {
             paddle = Paddle(self.currentPaddle),
             bricks = bs,
-            items = is, 
+            powerups = is, 
             health = 3,
             score = 0,
             highScores = self.highScores,

@@ -31,12 +31,12 @@ function VictoryState:update(dt)
     self.balls[1].y = self.paddle.y - 8
 
     -- go to play screen if the player presses Enter
-    local bs, is = LevelMaker.createMap(self.level + 1)
+    self.bs, self.powerups = LevelMaker.createMap(self.level + 1)
     if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
         gStateMachine:change('serve', {
             level = self.level + 1,
-            bricks = bs,
-            items = is,
+            bricks = self.bs,
+            powerups = self.powerups,
             paddle = self.paddle,
             health = self.health,
             score = self.score,

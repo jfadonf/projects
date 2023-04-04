@@ -23,4 +23,4 @@ PADDLE_SPEED = 200
 
 
 -- item drop speed
-ITEM_DROP_SPEED = 100
+POWERUP_DROP_SPEED = 100

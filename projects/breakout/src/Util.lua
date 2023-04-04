@@ -130,7 +130,7 @@ end
     This function is specifically made to piece out the items from the
     sprite sheet. 
 ]]
-function GenerateQuadsItems(atlas)
+function GenerateQuadsPowerups(atlas)
     local x = 0 
     local y = 192 
 
@@ -152,14 +152,15 @@ end
 function PickRandomItems(itemsQuantityOfSet, itemsQuantityOfSubset)
     local table1 = {}
     local result = {}
+    local j = 0
 
     for i = 1, itemsQuantityOfSet do
         table1[i] = i
     end
 
     for i = 1, itemsQuantityOfSubset do
-        local j = math.random(#table1)
-        table.insert(result, j) 
+        j = math.random(itemsQuantityOfSet + 1 - i)
+        table.insert(result, table1[j]) 
         table.remove(table1, j)
     end
     return result

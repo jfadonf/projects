@@ -23,8 +23,8 @@ ALTERNATE = 2       -- alternate colors
 SKIP = 3            -- skip every other block
 NONE = 4            -- no blocks this row
 
--- item number
-ITEM_QUANTITY = 30
+-- powerup number
+POWERUP_QUANTITY = 5
 
 LevelMaker = Class{}
 
@@ -35,7 +35,8 @@ LevelMaker = Class{}
 ]]
 function LevelMaker.createMap(level)
     local bricks = {}
-    local items = {}
+    local powerups = {}
+    local pq = POWERUP_QUANTITY
 
     -- randomly choose the number of rows
     local numRows = math.random(1, 5)
@@ -99,13 +100,13 @@ function LevelMaker.createMap(level)
                 y * 16                  -- just use y * 16, since we need top padding anyway
             )
 
-            i = Item(
+            i = Powerup(
                 -- x-coordinate
                 (x-1)                   -- decrement x by 1 because tables are 1-indexed, coords are 0
                 * 32                    -- multiply by 32, the brick width
                 + 8                     -- the screen should have 8 pixels of padding; we can fit 13 cols + 16 pixels total
                 + (13 - numCols) * 16   -- left-side padding for when there are fewer than 13 columns
-                + 8,         
+                + 8,                    -- be at the center of the brick
                 -- y-coordinate
                 y * 16,                  -- just use y * 16, since we need top padding anyway
                 9
@@ -129,8 +130,12 @@ function LevelMaker.createMap(level)
                 b.tier = solidTier
             end 
 
+            -- init powerups with active false and inPlay false
+            i.acitve = false
+            i.inPlay = false
+
             table.insert(bricks, b)
-            table.insert(items, i)
+            table.insert(powerups, i)
 
         
             -- Lua's version of the 'continue' statement
@@ -143,13 +148,13 @@ function LevelMaker.createMap(level)
         return self.createMap(level)
     end
 
-    -- hide items behind bricks
+    -- hide powerups behind bricks
     local brick_quantity = #bricks
-    ITEM_QUANTITY = math.min(brick_quantity, ITEM_QUANTITY)
-    local itemSubset = PickRandomItems(brick_quantity, ITEM_QUANTITY)
-    for i = 1, ITEM_QUANTITY do
-        items[itemSubset[i]].inPlay = true
+    pq = math.min(brick_quantity, pq)
+    local powerupset = PickRandomItems(brick_quantity, pq)
+    for i = 1, #powerupset do
+        powerups[powerupset[i]].inPlay = true
     end
 
-    return bricks, items
+    return bricks, powerups
 end

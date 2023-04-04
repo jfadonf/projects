@@ -31,7 +31,7 @@ function PlayState:enter(params)
     self.level = params.level
 
     self.recoverPoints = params.recoverPoints
-
+    self.triggerPoints = TRIGGER_POINTS
     -- give ball random starting velocity
     for i = 1, #self.balls do
         self.balls[i].dx = math.random(-200, 200)
@@ -107,6 +107,13 @@ function PlayState:update(dt)
 
                     -- play recover sound effect
                     gSounds['recover']:play()
+                end
+
+                -- each trigger points gained, enlarge the paddle
+                if self.score > self.triggerPoints then
+                    self.triggerPoints = self.triggerPoints + TRIGGER_POINTS
+                    local newPaddleSize = math.min(4, self.paddle.size + 1)
+                    self.paddle:resize(newPaddleSize)
                 end
 
                 -- go to our victory screen if there are no more bricks left
@@ -197,6 +204,9 @@ function PlayState:update(dt)
     if not ballInplay then
         self.health = self.health - 1
         gSounds['hurt']:play()
+        -- shrink the paddle
+        local newSize = math.max(1, self.paddle.size - 1)
+        self.paddle:resize(newSize)
 
         if self.health == 0 then
             gStateMachine:change('game-over', {

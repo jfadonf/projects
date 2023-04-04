@@ -21,6 +21,8 @@ VIRTUAL_HEIGHT = 243
 -- paddle movement speed
 PADDLE_SPEED = 200
 
-
 -- item drop speed
 POWERUP_DROP_SPEED = 100
+
+-- points trigger the enlargement of paddle
+TRIGGER_POINTS = 1500

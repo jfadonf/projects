@@ -86,15 +86,28 @@ function PlayState:update(dt)
             -- only check collision if we're in play
             if brick.inPlay and self.balls[i]:collides(brick) then
 
-                -- add to score
-                self.score = self.score + (brick.tier * 200 + brick.color * 25)
+                -- if the brick is not locked
+                if brick.islocked then
+                    -- if the paddle has a key then hit the locked brick, add scores
+                    -- remove the key from the paddle
+                    if self.paddle.haskey then
+                        brick:hitlocked(true)
+                        self.score = self.score + 1000
+                        self.paddle.haskey = false
+                    else
+                        brick:hitlocked(false)
+                    end
+                else
+                    -- add to score
+                    self.score = self.score + (brick.tier * 200 + brick.color * 25)
 
-                -- trigger the brick's hit function, which removes it from play
-                brick:hit()
+                    -- trigger the brick's hit function, which removes it from play
+                    brick:hit()
 
-                -- trigger the powerup to drop
-                if not brick.inPlay then
-                    self.powerups[k].active = true
+                    -- trigger the powerup to drop
+                    if not brick.inPlay then
+                        self.powerups[k].active = true
+                    end
                 end
 
                 -- if we have enough points, recover a point of health
@@ -117,7 +130,30 @@ function PlayState:update(dt)
                 end
 
                 -- go to our victory screen if there are no more bricks left
-                if self:checkVictory() then
+                brickLeft, brickLeftPosition, powerupLeft = self:checkVictory()
+                -- if the last brick is locked and the paddle hasn't key then give an extra key powerup when hit
+-- and self.bricks[brickLeftPosition].islocked
+                    if brickLeft == 1 and powerupLeft == 0 then
+                    -- provide a brick and a key powerup at the locked brick
+                    local p = Powerup(
+                        self.bricks[brickLeftPosition].x + 8,
+                        self.bricks[brickLeftPosition].y,
+                        10
+                    )
+                    p.inPlay = true
+                    local b = Brick(
+                        self.bricks[brickLeftPosition].x,
+                        self.bricks[brickLeftPosition].y
+                    )
+                    b.inPlay = true
+                    table.insert(self.bricks, 1, b)
+                    table.insert(self.powerups, 1, p)
+                end
+
+                if brickLeft == 0 then
+                    -- remove the key from paddle
+                    self.paddle.haskey = false
+
                     gSounds['victory']:play()
 
                     gStateMachine:change('victory', {
@@ -207,6 +243,8 @@ function PlayState:update(dt)
         -- shrink the paddle
         local newSize = math.max(1, self.paddle.size - 1)
         self.paddle:resize(newSize)
+        -- remove the key when all balls lost
+        self.paddle.haskey = false
 
         if self.health == 0 then
             gStateMachine:change('game-over', {
@@ -231,14 +269,19 @@ function PlayState:update(dt)
     for k, powerup in pairs(self.powerups) do
         powerup:update(dt)
         -- check if the paddle touched the powerup
-        if powerup.inPlay and powerup:collide(self.paddle) then
+        if powerup.inPlay and powerup.active and powerup:collide(self.paddle) then
             powerup.inPlay = false
-            local newBall1 = Ball(math.random(7))
-            newBall1:add(self.balls[1].x, self.balls[1].y, self.balls[1].dx-20, self.balls[1].dy-5)
-            local newBall2 = Ball(math.random(7))
-            newBall2:add(self.balls[1].x, self.balls[1].y, self.balls[1].dx+20, self.balls[1].dy+5)
-            table.insert(self.balls, newBall1)
-            table.insert(self.balls, newBall2)
+            if powerup.kind == 10 then
+                self.paddle.haskey = true
+            end
+            if powerup.kind == 9 then
+                local newBall1 = Ball(math.random(7))
+                newBall1:add(self.balls[1].x, self.balls[1].y, self.balls[1].dx-20, self.balls[1].dy-5)
+                local newBall2 = Ball(math.random(7))
+                newBall2:add(self.balls[1].x, self.balls[1].y, self.balls[1].dx+20, self.balls[1].dy+5)
+                table.insert(self.balls, newBall1)
+                table.insert(self.balls, newBall2)
+            end
         end
     end
 
@@ -289,11 +332,21 @@ function PlayState:render()
 end
 
 function PlayState:checkVictory()
+    local brickLeft = 0
+    local brickLeftPosition = 0
     for k, brick in pairs(self.bricks) do
         if brick.inPlay then
-            return false
+            brickLeft = brickLeft + 1
+            brickLeftPosition = k
         end 
     end
 
-    return true
+    local powerupLeft = 0
+    for k, powerup in pairs(self.powerups) do
+        if powerup.inPlay then
+            powerupLeft = powerupLeft + 1
+        end
+    end
+
+    return brickLeft, brickLeftPosition, powerupLeft
 end

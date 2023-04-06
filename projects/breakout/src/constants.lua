@@ -21,8 +21,14 @@ VIRTUAL_HEIGHT = 243
 -- paddle movement speed
 PADDLE_SPEED = 200
 
--- item drop speed
+-- powerups drop speed
 POWERUP_DROP_SPEED = 100
+
+-- powerup number
+POWERUP_QUANTITY = 10
+
+-- locked brick level possibility
+LBL_DENSITY = 3
 
 -- points trigger the enlargement of paddle
 TRIGGER_POINTS = 1500

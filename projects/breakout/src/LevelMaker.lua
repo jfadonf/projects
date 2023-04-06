@@ -23,8 +23,6 @@ ALTERNATE = 2       -- alternate colors
 SKIP = 3            -- skip every other block
 NONE = 4            -- no blocks this row
 
--- powerup number
-POWERUP_QUANTITY = 5
 
 LevelMaker = Class{}
 
@@ -36,7 +34,7 @@ LevelMaker = Class{}
 function LevelMaker.createMap(level)
     local bricks = {}
     local powerups = {}
-    local pq = POWERUP_QUANTITY
+    local powerupQuantity = POWERUP_QUANTITY
 
     -- randomly choose the number of rows
     local numRows = math.random(1, 5)
@@ -149,11 +147,26 @@ function LevelMaker.createMap(level)
     end
 
     -- hide powerups behind bricks
-    local brick_quantity = #bricks
-    pq = math.min(brick_quantity, pq)
-    local powerupset = PickRandomItems(brick_quantity, pq)
-    for i = 1, #powerupset do
+    local brickQuantity = #bricks
+    powerupQuantity = math.min(brickQuantity, powerupQuantity)
+    local powerupset = PickRandomItems(brickQuantity, powerupQuantity)
+
+    -- set the first random powerup to be the key powerup
+    powerups[powerupset[1]].kind = 10
+    for i = 1, powerupQuantity do
         powerups[powerupset[i]].inPlay = true
+    end
+    
+    -- if it is a Locked Brick Level then
+    if math.random(LBL_DENSITY) == 1 then
+        -- set a random brick to be locked, but not the one cover the key powerup
+        local lockedBrick = math.random(brickQuantity)
+        while lockedBrick == powerupset[1] do
+            lockedBrick = math.random(brickQuantity)
+        end 
+        bricks[lockedBrick].islocked = true
+        -- disable the powerup behind the locked brick
+        powerups[lockedBrick].inPlay = false
     end
 
     return bricks, powerups

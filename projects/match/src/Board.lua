@@ -43,6 +43,24 @@ function Board:initializeTiles()
         -- a matchless board on start
         self:initializeTiles()
     end
+
+    while not self:checkready() do
+
+        -- ensure there will be a potential match
+        self:initializeTiles()
+    end
+
+    -- make some tiles shiny
+    local shinyTiles = getsubset(SHINYTILEQUANTITY, 64)
+    for key, value in pairs(shinyTiles) do
+        local x = value % 8  
+        if x == 0 then
+            x = 8
+        end
+        local y = (value - x) / 8 + 1
+        self.tiles[y][x].shiny = true
+    end
+        
 end
 
 --[[
@@ -155,6 +173,23 @@ function Board:calculateMatches()
         end
     end
 
+    -- if there is a shiny tile in the matches, mark whole row tiles matches
+    local shinyTileRow = {}
+    for k, match in pairs(matches) do
+        for k, tile in pairs(match) do
+            if tile.shiny then
+                table.insert(shinyTileRow, tile.gridY)
+            end
+        end
+    end
+    for k, gridY in pairs(shinyTileRow) do
+        local match = {}
+        for i = 1, 8 do
+            table.insert(match, self.tiles[gridY][i])
+        end
+        table.insert(matches, match)
+    end
+
     -- store matches for later reference
     self.matches = matches
 
@@ -255,6 +290,96 @@ function Board:getFallingTiles()
 
     return tweens
 end
+
+-- check if there is a potential match in pattern
+function Board:checkready()
+    -- find all the double tiles
+    local doubleTiles1 = {}
+    local doubleTiles2 = {}
+    local doubleTiles3 = {}
+    local doubleTiles4 = {}
+
+    -- double tile type 1
+    for y = 1, 8 do
+        for x = 1, 7 do
+            if self.tiles[y][x].color == self.tiles[y][x + 1].color then
+                table.insert(doubleTiles1, {y, x})
+            end
+        end
+    end
+
+    -- check is there a tile around could match the double
+    for k, doubleT in pairs(doubleTiles1) do
+        local potentials = getPotentials1(doubleT[1], doubleT[2])
+        for k, potential in pairs(potentials) do
+            if self.tiles[doubleT[1]][doubleT[2]].color == self.tiles[potential[1]][potential[2]].color then
+                return true
+            end
+        end
+    end
+        
+
+    -- double tile type 2
+    for y = 1, 8 do
+        for x = 1, 6 do
+            if self.tiles[y][x].color == self.tiles[y][x + 2].color then
+                table.insert(doubleTiles2, {y, x})
+            end
+        end
+    end
+
+    -- check is there a tile around could match the double
+    for k, doubleT in pairs(doubleTiles2) do
+        local potentials = getPotentials2(doubleT[1], doubleT[2])
+        for k, potential in pairs(potentials) do
+            if self.tiles[doubleT[1]][doubleT[2]].color == self.tiles[potential[1]][potential[2]].color then
+                return true
+            end
+        end
+    end
+        
+    -- double tile type 3
+    for y = 1, 7 do
+        for x = 1, 8 do
+            if self.tiles[y][x].color == self.tiles[y + 1][x].color then
+                table.insert(doubleTiles3, {y, x})
+            end
+        end
+    end
+
+    -- check is there a tile around could match the double
+    for k, doubleT in pairs(doubleTiles3) do
+        local potentials = getPotentials3(doubleT[1], doubleT[2])
+        for k, potential in pairs(potentials) do
+            if self.tiles[doubleT[1]][doubleT[2]].color == self.tiles[potential[1]][potential[2]].color then
+                return true
+            end
+        end
+    end
+        
+
+    -- double tile type 4
+    for y = 1, 6 do
+        for x = 1, 8 do
+            if self.tiles[y][x].color == self.tiles[y + 2][x].color then
+                table.insert(doubleTiles4, {y, x})
+            end
+        end
+    end
+
+    -- check is there a tile around could match the double
+    for k, doubleT in pairs(doubleTiles4) do
+        local potentials = getPotentials4(doubleT[1], doubleT[2])
+        for k, potential in pairs(potentials) do
+            if self.tiles[doubleT[1]][doubleT[2]].color == self.tiles[potential[1]][potential[2]].color then
+                return true
+            end
+        end
+    end
+
+    return false
+end
+
 
 function Board:render()
     for y = 1, #self.tiles do

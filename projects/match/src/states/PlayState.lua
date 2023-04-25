@@ -168,7 +168,33 @@ function PlayState:update(dt)
                 
                 -- once the swap is finished, we can tween falling blocks as needed
                 :finish(function()
-                    self:calculateMatches()
+                    self.highlightedTileOld = self.highlightedTile
+                    if not self:calculateMatches() then
+                        -- swap grid positions of tiles
+                        local tempX = self.highlightedTileOld.gridX
+                        local tempY = self.highlightedTileOld.gridY
+
+                        self.highlightedTileOld.gridX = newTile.gridX
+                        self.highlightedTileOld.gridY = newTile.gridY
+                        newTile.gridX = tempX
+                        newTile.gridY = tempY
+
+                        -- swap tiles in the tiles table
+                        self.board.tiles[self.highlightedTileOld.gridY][self.highlightedTileOld.gridX] =
+                            self.highlightedTileOld
+
+                        self.board.tiles[newTile.gridY][newTile.gridX] = newTile
+
+                        -- tween coordinates between the two so they swap
+                        Timer.tween(0.1, {
+                            [self.highlightedTileOld] = {x = newTile.x, y = newTile.y},
+                            [newTile] = {x = self.highlightedTileOld.x, y = self.highlightedTileOld.y}
+                        })
+                
+                    end
+                    while not self.board:checkready() do
+                        self.board:initializeTiles()
+                    end
                 end)
             end
         end
@@ -216,10 +242,16 @@ function PlayState:calculateMatches()
             -- as a result of falling blocks once new blocks have finished falling
             self:calculateMatches()
         end)
-    
+        
+        -- return true when there is a match
+        return true
+
     -- if no matches, we can continue playing
     else
         self.canInput = true
+
+        -- return false when there is no match
+        return false
     end
 end
 

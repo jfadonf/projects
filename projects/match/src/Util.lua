@@ -83,3 +83,107 @@ function print_r ( t )
     end
     print()
 end
+
+-- get random subset function
+function getsubset(subsetq, setq)
+    if subsetq > setq then
+        return false
+    end
+
+    local set = {}
+    for i = 1, setq do
+        set[i] = i
+    end
+
+    local subset = {}
+    for i = 1, subsetq do
+        subset[i] = table.remove(set, math.random(setq + 1 - i))
+    end
+
+    return subset
+end
+
+-- get positions of potential tiles 
+function getPotentials1(y, x)
+    local potentials = {}
+    if (y - 1) >= 1 and (x - 1) >= 1 then
+        table.insert(potentials, {y - 1, x - 1})
+    end
+
+    if (x - 2) >= 1 then
+        table.insert(potentials, {y, x - 2})
+    end
+
+    if (y + 1) <= 8 and (x - 1) >= 1 then
+        table.insert(potentials, {y + 1, x - 1})
+    end
+
+    if (y - 1) >= 1 and (x + 2) <= 8 then
+        table.insert(potentials, {y - 1, x + 2})
+    end
+    
+    if (x + 3) <= 8 then
+        table.insert(potentials, {y, x + 3})
+    end
+    
+    if (y + 1) <= 8 and (x + 2) <= 8 then
+        table.insert(potentials, {y + 1, x + 2})
+    end
+
+    return potentials
+end
+
+function getPotentials2(y, x)
+    local potentials = {}
+    if (y - 1) >= 1 and (x + 1) <= 7 then
+        table.insert(potentials, {y - 1, x + 1})
+    end
+
+    if (y + 1) <= 8 and (x + 1) <= 7 then
+        table.insert(potentials, {y + 1, x + 1})
+    end
+
+    return potentials
+end
+
+function getPotentials3(y, x)
+    local potentials = {}
+    if (y - 1) >= 1 and (x - 1) >= 1 then
+        table.insert(potentials, {y - 1, x - 1})
+    end
+
+    if (y - 2) >= 1 then
+        table.insert(potentials, {y - 2, x})
+    end
+
+    if (y - 1) >= 1 and (x + 1) <= 8 then
+        table.insert(potentials, {y - 1, x + 1})
+    end
+
+    if (y + 2) <= 8 and (x - 1) >= 1 then
+        table.insert(potentials, {y + 2, x - 1})
+    end
+    
+    if (y + 3) <= 8 then
+        table.insert(potentials, {y + 3, x})
+    end
+    
+    if (y + 2) <= 8 and (x + 1) <= 8 then
+        table.insert(potentials, {y + 2, x + 1})
+    end
+
+    return potentials
+end
+
+function getPotentials4(y, x)
+    local potentials = {}
+    if (y + 1) <= 7 and (x - 1) >= 1 then
+        table.insert(potentials, {y + 1, x - 1})
+    end
+
+    if (y + 1) <= 7 and (x + 1) <= 8 then
+        table.insert(potentials, {y + 1, x + 1})
+    end
+
+    return potentials
+end

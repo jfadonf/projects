@@ -25,6 +25,11 @@ Timer = require 'lib/knife.timer'
 -- our own code
 --
 
+-- CONSTANTS
+SHINYTILEQUANTITY = 7
+
+
+
 -- utility
 require 'src/StateMachine'
 require 'src/Util'

@@ -78,6 +78,25 @@ function love.load()
 
     -- initialize input table
     love.keyboard.keysPressed = {}
+
+
+-- Load the shader file
+    shader = love.graphics.newShader([[
+        extern float time;
+
+        vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
+        // Calculate the random sparkle effect
+        float sparkle = abs(sin(time * 10.0 + texture_coords.x * 100.0 + texture_coords.y * 50.0)) * 0.2;
+
+        // Apply the sparkle effect to the color
+        color.rgb += vec3(sparkle);
+
+        return Texel(texture, texture_coords) * color;
+        }
+    ]])
+
+    -- Set the time variable for the shader
+    time = 0
 end
 
 function love.resize(w, h)
@@ -111,9 +130,17 @@ function love.update(dt)
     gStateMachine:update(dt)
 
     love.keyboard.keysPressed = {}
+
+
+    -- Update the time variable for the shader
+    time = time + dt/3
 end
 
 function love.draw()
+    -- Set the shader parameters
+    shader:send("time", time)
+
+
     push:start()
 
     -- scrolling background drawn behind every state

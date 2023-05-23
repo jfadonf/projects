@@ -14,12 +14,13 @@ function PlayState:init()
     self.tileMap = self.level.tileMap
     self.background = math.random(3)
     self.backgroundX = 0
+    self.firstGround = findground(self.tileMap.tiles) * 16 - 16
 
     self.gravityOn = true
     self.gravityAmount = 6
 
     self.player = Player({
-        x = 0, y = 0,
+        x = self.firstGround, y = 0,
         width = 16, height = 20,
         texture = 'green-alien',
         stateMachine = StateMachine {

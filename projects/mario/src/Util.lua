@@ -99,3 +99,17 @@ function print_r ( t )
     end
     print()
 end
+
+-- find the first solid ground at the beginning of the map
+function findground(tiles)
+    local height = #tiles
+    local width = #tiles[1]
+    for x = 1, width do
+        for y = 1, height do
+            if tiles[y][x].id == TILE_ID_GROUND then
+                return x
+            end
+        end
+    end
+end
+    

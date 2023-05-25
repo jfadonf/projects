@@ -161,6 +161,77 @@ function LevelMaker.generate(width, height)
         end
     end
 
+    -- random a set of key and lock
+    local keyAndLockFrame = math.random(#KEY_LOCK)
+
+    -- choose a ground to place key
+    local keyPosition = math.random(width / 3)
+    while not (tiles[7][keyPosition].id == TILE_ID_GROUND and tiles[6][keyPosition].id == TILE_ID_EMPTY) do
+        keyPosition = math.random(width / 3)
+    end
+
+    -- spawn a key
+    table.insert(objects,
+
+        -- key
+        GameObject {
+            texture = 'key-lock',
+            x = (keyPosition - 1) * TILE_SIZE,
+            y = 5 * TILE_SIZE,
+            width = 16,
+            height = 16,
+
+            -- make it a random variant
+            frame = keyAndLockFrame,
+            collidable = true,
+            consumable = true,
+            solid = false,
+
+            onConsume = function(player, object)
+                gSounds['pickup']:play()
+                player.score = player.score + 100
+                player.key = true
+                for k, object in pairs(objects) do
+                    if object.texture == 'key-lock' and object.frame > 4 then
+                        object.consumable = true
+                        object.solid = false
+                    end
+                end
+            end
+        }
+    )
+
+    -- choose a ground to place lock
+    local lockPosition = math.random(width / 3) + math.floor(width / 3)
+    while not (tiles[7][lockPosition].id == TILE_ID_GROUND and tiles[6][lockPosition].id == TILE_ID_EMPTY) do
+        lockPosition = math.random(width / 3) + math.floor(width / 3)
+    end
+
+    -- spawn a lock
+    table.insert(objects,
+
+        -- lock
+        GameObject {
+            texture = 'key-lock',
+            x = (lockPosition - 1) * TILE_SIZE,
+            y = 5 * TILE_SIZE,
+            width = 16,
+            height = 16,
+
+            -- make it a random variant
+            frame = keyAndLockFrame + 4,
+            collidable = true,
+            consumable = false,
+            solid = true,
+
+            onConsume = function(player, object)
+                gSounds['pickup']:play()
+                player.score = player.score + 100
+                player.lock = true
+            end
+        }
+    )
+
     local map = TileMap(width, height)
     map.tiles = tiles
     

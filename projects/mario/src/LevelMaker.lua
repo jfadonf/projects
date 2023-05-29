@@ -28,7 +28,7 @@ function LevelMaker.generate(width, height)
     end
 
     -- column by column generation instead of row; sometimes better for platformers
-    for x = 1, width do
+    for x = 1, width - 2 do
         local tileID = TILE_ID_EMPTY
         
         -- lay out the empty space
@@ -137,17 +137,17 @@ function LevelMaker.generate(width, height)
                                         -- gem has its own function to add to the player's score
                                         onConsume = function(player, object)
                                             gSounds['pickup']:play()
-                                            player.score = player.score + 100
+                                            gScore = gScore + 100
                                         end
                                     }
+
+                                    table.insert(objects, gem)
                                     
                                     -- make the gem move up from the block and play a sound
                                     Timer.tween(0.1, {
                                         [gem] = {y = (blockHeight - 2) * TILE_SIZE}
                                     })
                                     gSounds['powerup-reveal']:play()
-
-                                    table.insert(objects, gem)
                                 end
 
                                 obj.hit = true
@@ -158,6 +158,19 @@ function LevelMaker.generate(width, height)
                     }
                 )
             end
+        end
+    end
+
+    -- the last 2 columns for the flag
+    for i = 1, 2 do
+        for y = 1, 6 do
+            table.insert(tiles[y],
+                Tile(width - 2 + i, y, TILE_ID_EMPTY, nil, tileset, topperset))
+        end
+
+        for y = 7, height do
+            table.insert(tiles[y],
+                Tile(width - 2 + i, y, TILE_ID_GROUND, y == 7 and topper or nil, tileset, topperset))
         end
     end
 
@@ -189,7 +202,7 @@ function LevelMaker.generate(width, height)
 
             onConsume = function(player, object)
                 gSounds['pickup']:play()
-                player.score = player.score + 100
+                gScore = gScore + 100
                 player.key = true
                 for k, object in pairs(objects) do
                     if object.texture == 'key-lock' and object.frame > 4 then
@@ -203,7 +216,7 @@ function LevelMaker.generate(width, height)
 
     -- choose a ground to place lock
     local lockPosition = math.random(width / 3) + math.floor(width / 3)
-    while not (tiles[7][lockPosition].id == TILE_ID_GROUND and tiles[6][lockPosition].id == TILE_ID_EMPTY) do
+    while not (tiles[4][lockPosition].id == TILE_ID_EMPTY) do
         lockPosition = math.random(width / 3) + math.floor(width / 3)
     end
 
@@ -214,7 +227,7 @@ function LevelMaker.generate(width, height)
         GameObject {
             texture = 'key-lock',
             x = (lockPosition - 1) * TILE_SIZE,
-            y = 5 * TILE_SIZE,
+            y = 3 * TILE_SIZE,
             width = 16,
             height = 16,
 
@@ -224,10 +237,66 @@ function LevelMaker.generate(width, height)
             consumable = false,
             solid = true,
 
+            onCollide = function(player, object)
+                gSounds['empty-block']:play()
+            end,
+
             onConsume = function(player, object)
                 gSounds['pickup']:play()
-                player.score = player.score + 100
+                gScore = gScore + 100
                 player.lock = true
+
+                -- make the pole appear at the last column
+                local pole = GameObject {
+                    texture = 'poles',
+                    x = (width - 2) * TILE_SIZE + 8,
+                    y = 3 * TILE_SIZE,
+                    width = 16,
+                    height = 48,
+                    frame = math.random(#POLES),
+                    collidable = true,
+                    consumable = false,
+                    solid = false
+                }
+
+                table.insert(objects, pole)
+                
+                local flag = GameObject {
+                    texture = 'flags',
+                    x = (width - 1) * TILE_SIZE,
+                    y = 3 * TILE_SIZE,
+                    width = 16,
+                    height = 16,
+                    frame = 7,
+                    collidable = true,
+                    consumable = true,
+                    solid = false,
+
+                    onConsume = function(player, object)
+                        gSounds['powerup-reveal']:play()
+
+                        -- go to next level
+                        gLevel = gLevel + 1
+                        gStateMachine:change('play', {})
+                    end,
+
+                    onCollide = function(player, object)
+                        gSounds['powerup-reveal']:play()
+
+                        -- go to next level
+                        gLevel = gLevel + 1
+                        gStateMachine:change('play', {})
+                    end
+                }
+
+                table.insert(objects, flag)
+
+                -- make the flag floating
+                Timer.every(0.1, function()
+                    flag.frame = math.random(3) + 6
+                end)
+                gSounds['powerup-reveal']:play()
+
             end
         }
     )

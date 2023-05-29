@@ -74,7 +74,9 @@ gTextures = {
     ['backgrounds'] = love.graphics.newImage('graphics/backgrounds.png'),
     ['green-alien'] = love.graphics.newImage('graphics/green_alien.png'),
     ['creatures'] = love.graphics.newImage('graphics/creatures.png'),
-    ['key-lock'] = love.graphics.newImage('graphics/keys_and_locks.png')
+    ['key-lock'] = love.graphics.newImage('graphics/keys_and_locks.png'),
+    ['poles'] = love.graphics.newImage('graphics/flags.png'),
+    ['flags'] = love.graphics.newImage('graphics/flags.png')
 }
 
 gFrames = {
@@ -89,6 +91,8 @@ gFrames = {
     ['green-alien'] = GenerateQuads(gTextures['green-alien'], 16, 20),
     ['creatures'] = GenerateQuads(gTextures['creatures'], 16, 16),
     ['key-lock'] = GenerateQuads(gTextures['key-lock'], 16, 16),
+    ['poles'] = GenerateQuads(gTextures['flags'], 16, 48),
+    ['flags'] = GenerateQuads(gTextures['flags'], 16, 16)
 }
 
 -- these need to be added after gFrames is initialized because they refer to gFrames from within
@@ -104,3 +108,7 @@ gFonts = {
     ['large'] = love.graphics.newFont('fonts/font.ttf', 32),
     ['title'] = love.graphics.newFont('fonts/ArcadeAlternate.ttf', 32)
 }
+
+gLevel = 1
+
+gScore = 0

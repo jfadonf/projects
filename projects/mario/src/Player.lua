@@ -12,7 +12,8 @@ Player = Class{__includes = Entity}
 
 function Player:init(def)
     Entity.init(self, def)
-    self.score = 0
+    self.level = def.level
+    self.score = def.score
     self.key = false
     self.lock = false
 end

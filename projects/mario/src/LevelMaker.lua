@@ -137,7 +137,7 @@ function LevelMaker.generate(width, height)
                                         -- gem has its own function to add to the player's score
                                         onConsume = function(player, object)
                                             gSounds['pickup']:play()
-                                            gScore = gScore + 100
+                                            player.score = player.score + 100
                                         end
                                     }
 
@@ -202,7 +202,7 @@ function LevelMaker.generate(width, height)
 
             onConsume = function(player, object)
                 gSounds['pickup']:play()
-                gScore = gScore + 100
+                player.score = player.score + 100
                 player.key = true
                 for k, object in pairs(objects) do
                     if object.texture == 'key-lock' and object.frame > 4 then
@@ -243,7 +243,7 @@ function LevelMaker.generate(width, height)
 
             onConsume = function(player, object)
                 gSounds['pickup']:play()
-                gScore = gScore + 100
+                player.score = player.score + 100
                 player.lock = true
 
                 -- make the pole appear at the last column
@@ -272,20 +272,16 @@ function LevelMaker.generate(width, height)
                     consumable = true,
                     solid = false,
 
-                    onConsume = function(player, object)
+                    onConsume = function()
                         gSounds['powerup-reveal']:play()
 
                         -- go to next level
-                        gLevel = gLevel + 1
-                        gStateMachine:change('play', {})
-                    end,
-
-                    onCollide = function(player, object)
-                        gSounds['powerup-reveal']:play()
-
-                        -- go to next level
-                        gLevel = gLevel + 1
-                        gStateMachine:change('play', {})
+                        gStateMachine:change('play', {
+                            gameLevel = 
+                                gStateMachine.current.gameLevel + 1,
+                            gameScore = 
+                                gStateMachine.current.player.score + 1000
+                        })
                     end
                 }
 

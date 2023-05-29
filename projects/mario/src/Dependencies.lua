@@ -108,7 +108,3 @@ gFonts = {
     ['large'] = love.graphics.newFont('fonts/font.ttf', 32),
     ['title'] = love.graphics.newFont('fonts/ArcadeAlternate.ttf', 32)
 }
-
-gLevel = 1
-
-gScore = 0

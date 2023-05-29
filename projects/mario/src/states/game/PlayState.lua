@@ -10,7 +10,8 @@ PlayState = Class{__includes = BaseState}
 function PlayState:enter(params)
     self.camX = 0
     self.camY = 0
-    self.level = LevelMaker.generate(50 + 20 * gLevel, 10)
+    self.gameLevel = params.gameLevel
+    self.level = LevelMaker.generate(50 + 20 * self.gameLevel, 10)
     self.tileMap = self.level.tileMap
     self.background = math.random(3)
     self.backgroundX = 0
@@ -29,8 +30,9 @@ function PlayState:enter(params)
             ['jump'] = function() return PlayerJumpState(self.player, self.gravityAmount) end,
             ['falling'] = function() return PlayerFallingState(self.player, self.gravityAmount) end
         },
+        level = self.level,
         map = self.tileMap,
-        level = self.level
+        score = params.gameScore
     })
 
     self:spawnEnemies()
@@ -78,9 +80,9 @@ function PlayState:render()
     -- render score
     love.graphics.setFont(gFonts['medium'])
     love.graphics.setColor(0, 0, 0, 1)
-    love.graphics.print(tostring(gScore), 5, 5)
+    love.graphics.print(tostring(self.player.score), 5, 5)
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.print(tostring(gScore), 4, 4)
+    love.graphics.print(tostring(self.player.score), 4, 4)
 end
 
 function PlayState:updateCamera()

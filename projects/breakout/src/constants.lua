@@ -28,7 +28,7 @@ POWERUP_DROP_SPEED = 100
 POWERUP_QUANTITY = 10
 
 -- locked brick level possibility
-LBL_DENSITY = 3
+LBL_DENSITY = 2
 
 -- points trigger the enlargement of paddle
 TRIGGER_POINTS = 1500

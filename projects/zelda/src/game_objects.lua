@@ -14,6 +14,7 @@ GAME_OBJECT_DEFS = {
         width = 16,
         height = 16,
         solid = false,
+        istaken = false,
         defaultState = 'unpressed',
         states = {
             ['unpressed'] = {
@@ -24,7 +25,24 @@ GAME_OBJECT_DEFS = {
             }
         }
     },
+
     ['pot'] = {
         -- TODO
+    },
+
+    ['heartObj'] = {
+        type = 'heartObj',
+        texture = 'hearts',
+        frame = 5,
+        width = 16,
+        height = 16,
+        solid = false,
+        istaken = false,
+        defaultState = 'full',
+        states = {
+            ['full'] = {
+                frame = 5
+            }
+        }
     }
 }

@@ -157,8 +157,29 @@ function Room:update(dt)
         local entity = self.entities[i]
 
         -- remove entity from the table if health is <= 0
-        if entity.health <= 0 then
+        if entity.health <= 0 and not entity.dead then
             entity.dead = true
+            -- possible to have heart dropped
+            if 1 == math.random(4) then
+                local heartObj = GameObject(
+                    GAME_OBJECT_DEFS['heartObj'],
+                    entity.x,
+                    entity.y
+                )
+
+                -- define a function for the heart that will cure the player
+                heartObj.onCollide = function()
+                    -- mark the heartObj with istaken label
+                    heartObj.istaken = true
+
+                    -- cure player
+                    self.player.health = math.min(self.player.health + 2, 6)
+                    gSounds['healthup']:play()
+                end
+
+                -- add to list of objects in scene
+                table.insert(self.objects, heartObj)
+            end
         elseif not entity.dead then
             entity:processAI({room = self}, dt)
             entity:update(dt)
@@ -175,13 +196,20 @@ function Room:update(dt)
             end
         end
     end
-
+        
     for k, object in pairs(self.objects) do
         object:update(dt)
 
         -- trigger collision callback on object
         if self.player:collides(object) then
             object:onCollide()
+        end
+    end
+
+    -- remove the heartObj which is taken from objects table
+    for i = #self.objects, 1, -1 do
+        if self.objects[i].istaken then
+            table.remove(self.objects, i)
         end
     end
 end

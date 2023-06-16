@@ -19,6 +19,9 @@ function GameObject:init(def, x, y)
     -- whether it acts as an obstacle or not
     self.solid = def.solid
 
+    -- whether it is taken or not
+    self.istaken = def.istaken
+
     self.defaultState = def.defaultState
     self.state = self.defaultState
     self.states = def.states

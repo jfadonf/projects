@@ -92,7 +92,7 @@ function Entity:update(dt)
         end
     end
 
-    self.stateMachine:update(dt)
+    self.stateMachine:update(dt, dungeon)
 
     if self.currentAnimation then
         self.currentAnimation:update(dt)

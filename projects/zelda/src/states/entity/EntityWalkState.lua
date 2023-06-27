@@ -20,12 +20,17 @@ function EntityWalkState:init(entity, dungeon)
 
     -- keeps track of whether we just hit a wall
     self.bumped = false
+    
+    -- keeps track of whether we just hit a pot
+    self.potted = false
 end
 
 function EntityWalkState:update(dt)
-    
     -- assume we didn't hit a wall
     self.bumped = false
+
+    -- assume we didn't hit a pot
+    self.potted = false
 
     -- boundary checking on all sides, allowing us to avoid collision detection on tiles
     if self.entity.direction == 'left' then
@@ -35,6 +40,16 @@ function EntityWalkState:update(dt)
             self.entity.x = MAP_RENDER_OFFSET_X + TILE_SIZE
             self.bumped = true
         end
+
+        --  if a pot is on the left side, bolck entity's movement
+        for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
+            if object.type == 'pot' and self.entity:collides(object) then
+                self.entity.x = object.x + object.width + 0.5
+                self.potted = true
+                break
+            end
+        end
+
     elseif self.entity.direction == 'right' then
         self.entity.x = self.entity.x + self.entity.walkSpeed * dt
 
@@ -42,6 +57,16 @@ function EntityWalkState:update(dt)
             self.entity.x = VIRTUAL_WIDTH - TILE_SIZE * 2 - self.entity.width
             self.bumped = true
         end
+
+        --  if a pot is on the right side, bolck entity's movement
+        for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
+            if object.type == 'pot' and self.entity:collides(object) then
+                self.entity.x = object.x - self.entity.width - 0.5
+                self.potted = true
+                break
+            end
+        end
+
     elseif self.entity.direction == 'up' then
         self.entity.y = self.entity.y - self.entity.walkSpeed * dt
 
@@ -49,6 +74,16 @@ function EntityWalkState:update(dt)
             self.entity.y = MAP_RENDER_OFFSET_Y + TILE_SIZE - self.entity.height / 2
             self.bumped = true
         end
+
+        --  if a pot is on the upper side, bolck entity's movement
+        for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
+            if object.type == 'pot' and self.entity:collides(object) then
+                self.entity.y = object.y + 5.5
+                self.potted = true
+                break
+            end
+        end
+
     elseif self.entity.direction == 'down' then
         self.entity.y = self.entity.y + self.entity.walkSpeed * dt
 
@@ -59,6 +94,15 @@ function EntityWalkState:update(dt)
             self.entity.y = bottomEdge - self.entity.height
             self.bumped = true
         end
+
+        --  if a pot is on the down side, bolck entity's movement
+        for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
+            if object.type == 'pot' and self.entity:collides(object) then
+                self.entity.y = object.y - self.entity.height - 0.5
+                self.potted = true
+                break
+            end
+        end
     end
 end
 
@@ -66,7 +110,7 @@ function EntityWalkState:processAI(params, dt)
     local room = params.room
     local directions = {'left', 'right', 'up', 'down'}
 
-    if self.moveDuration == 0 or self.bumped then
+    if self.moveDuration == 0 or self.bumped or self.potted then
         
         -- set an initial move duration and direction
         self.moveDuration = math.random(5)

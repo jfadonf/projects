@@ -60,6 +60,7 @@ function PlayerWalkState:update(dt)
 
             -- readjust
             self.entity.x = self.entity.x + PLAYER_WALK_SPEED * dt
+
         elseif self.entity.direction == 'right' then
             
             -- temporarily adjust position
@@ -77,6 +78,7 @@ function PlayerWalkState:update(dt)
 
             -- readjust
             self.entity.x = self.entity.x - PLAYER_WALK_SPEED * dt
+
         elseif self.entity.direction == 'up' then
             
             -- temporarily adjust position
@@ -94,6 +96,7 @@ function PlayerWalkState:update(dt)
 
             -- readjust
             self.entity.y = self.entity.y + PLAYER_WALK_SPEED * dt
+
         else
             
             -- temporarily adjust position

@@ -69,3 +69,11 @@ function print_r ( t )
     end
     print()
 end
+
+--[[
+    A collide detection for two object
+]]
+function gcollides(obj1, target)
+    return not (obj1.x + obj1.width < target.x or obj1.x > target.x + target.width or
+                obj1.y + obj1.height < target.y or obj1.y > target.y + target.height)
+end

@@ -6,9 +6,9 @@
     cogden@cs50.harvard.edu
 ]]
 
-PlayerSwingSwordState = Class{__includes = BaseState}
+PlayerLiftingPotState = Class{__includes = BaseState}
 
-function PlayerSwingSwordState:init(player, dungeon)
+function PlayerLiftingPotState:init(player, dungeon)
     self.player = player
     self.dungeon = dungeon
 
@@ -16,50 +16,24 @@ function PlayerSwingSwordState:init(player, dungeon)
     self.player.offsetY = 5
     self.player.offsetX = 8
 
-    -- create hitbox based on where the player is and facing
+    -- where the player is and facing
     local direction = self.player.direction
-    local hitboxX, hitboxY, hitboxWidth, hitboxHeight
 
-    if direction == 'left' then
-        hitboxWidth = 8
-        hitboxHeight = 16
-        hitboxX = self.player.x - hitboxWidth
-        hitboxY = self.player.y + 2
-    elseif direction == 'right' then
-        hitboxWidth = 8
-        hitboxHeight = 16
-        hitboxX = self.player.x + self.player.width
-        hitboxY = self.player.y + 2
-    elseif direction == 'up' then
-        hitboxWidth = 16
-        hitboxHeight = 8
-        hitboxX = self.player.x
-        hitboxY = self.player.y - hitboxHeight
-    else
-        hitboxWidth = 16
-        hitboxHeight = 8
-        hitboxX = self.player.x
-        hitboxY = self.player.y + self.player.height
-    end
-
-    -- separate hitbox for the player's sword; will only be active during this state
-    self.swordHitbox = Hitbox(hitboxX, hitboxY, hitboxWidth, hitboxHeight)
-
-    -- sword-left, sword-up, etc
-    self.player:changeAnimation('sword-' .. self.player.direction)
+    -- change the animation to lift the pot
+    self.player:changeAnimation('liftpot-' .. self.player.direction)
 end
 
-function PlayerSwingSwordState:enter(params)
+function PlayerLiftingPotState:enter(params)
 
-    -- restart sword swing sound for rapid swinging
+    -- restart pot lifting sound
     gSounds['sword']:stop()
     gSounds['sword']:play()
 
-    -- restart sword swing animation
+    -- restart pot lifting animation
     self.player.currentAnimation:refresh()
 end
 
-function PlayerSwingSwordState:update(dt)
+function PlayerLiftingPotState:update(dt)
     
     -- check if hitbox collides with any entities in the scene
     for k, entity in pairs(self.dungeon.currentRoom.entities) do

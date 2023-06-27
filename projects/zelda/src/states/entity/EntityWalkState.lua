@@ -18,19 +18,13 @@ function EntityWalkState:init(entity, dungeon)
     self.moveDuration = 0
     self.movementTimer = 0
 
-    -- keeps track of whether we just hit a wall
+    -- keeps track of whether we just hit a wall or a pot
     self.bumped = false
-    
-    -- keeps track of whether we just hit a pot
-    self.potted = false
 end
 
 function EntityWalkState:update(dt)
-    -- assume we didn't hit a wall
+    -- assume we didn't hit a wall or pot
     self.bumped = false
-
-    -- assume we didn't hit a pot
-    self.potted = false
 
     -- boundary checking on all sides, allowing us to avoid collision detection on tiles
     if self.entity.direction == 'left' then
@@ -45,7 +39,6 @@ function EntityWalkState:update(dt)
         for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
             if object.type == 'pot' and self.entity:collides(object) then
                 self.entity.x = object.x + object.width + 0.5
-                self.potted = true
                 break
             end
         end
@@ -62,7 +55,6 @@ function EntityWalkState:update(dt)
         for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
             if object.type == 'pot' and self.entity:collides(object) then
                 self.entity.x = object.x - self.entity.width - 0.5
-                self.potted = true
                 break
             end
         end
@@ -79,7 +71,6 @@ function EntityWalkState:update(dt)
         for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
             if object.type == 'pot' and self.entity:collides(object) then
                 self.entity.y = object.y + 5.5
-                self.potted = true
                 break
             end
         end
@@ -99,7 +90,6 @@ function EntityWalkState:update(dt)
         for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
             if object.type == 'pot' and self.entity:collides(object) then
                 self.entity.y = object.y - self.entity.height - 0.5
-                self.potted = true
                 break
             end
         end
@@ -110,7 +100,7 @@ function EntityWalkState:processAI(params, dt)
     local room = params.room
     local directions = {'left', 'right', 'up', 'down'}
 
-    if self.moveDuration == 0 or self.bumped or self.potted then
+    if self.moveDuration == 0 or self.bumped then
         
         -- set an initial move duration and direction
         self.moveDuration = math.random(5)

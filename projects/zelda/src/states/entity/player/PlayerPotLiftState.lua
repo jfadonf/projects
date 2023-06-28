@@ -39,8 +39,13 @@ function PlayerPotLiftState:enter(params)
         -- collision detection with the pots
         for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
             if object.type == 'pot' and self.player:collides(object) then
-                self.player.havePot = true
-                gStateMachine.current.dungeon.currentRoom.objects[k].lifted = true
+                Timer.tween(0.8, {
+                    [object] = {x = self.player.x, y = self.player.y + 22 - 32},
+                })
+                :finish(function()
+                    gStateMachine.current.dungeon.currentRoom.objects[k].lifted = true
+                    self.player.havePot = true
+                end)
                 break
             end
         end
@@ -53,8 +58,13 @@ function PlayerPotLiftState:enter(params)
         -- collision detection with the pots
         for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
             if object.type == 'pot' and self.player:collides(object) then
-                self.player.havePot = true
-                gStateMachine.current.dungeon.currentRoom.objects[k].lifted = true
+                Timer.tween(0.8, {
+                    [object] = {x = self.player.x, y = self.player.y + 22 - 32},
+                })
+                :finish(function()
+                    gStateMachine.current.dungeon.currentRoom.objects[k].lifted = true
+                    self.player.havePot = true
+                end)
                 break
             end
         end
@@ -67,8 +77,13 @@ function PlayerPotLiftState:enter(params)
         -- collision detection with the pots
         for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
             if object.type == 'pot' and self.player:collides(object) then
-                self.player.havePot = true
-                gStateMachine.current.dungeon.currentRoom.objects[k].lifted = true
+                Timer.tween(0.8, {
+                    [object] = {x = self.player.x, y = self.player.y + 22 - 32},
+                })
+                :finish(function()
+                    gStateMachine.current.dungeon.currentRoom.objects[k].lifted = true
+                    self.player.havePot = true
+                end)
                 break
             end
         end
@@ -81,8 +96,13 @@ function PlayerPotLiftState:enter(params)
         -- collision detection with the pots
         for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
             if object.type == 'pot' and self.player:collides(object) then
-                self.player.havePot = true
-                gStateMachine.current.dungeon.currentRoom.objects[k].lifted = true
+                Timer.tween(0.8, {
+                    [object] = {x = self.player.x, y = self.player.y + 22 - 32},
+                })
+                :finish(function()
+                    gStateMachine.current.dungeon.currentRoom.objects[k].lifted = true
+                    self.player.havePot = true
+                end)
                 break
             end
         end
@@ -95,18 +115,6 @@ function PlayerPotLiftState:enter(params)
 end
 
 function PlayerPotLiftState:update(dt)
-    -- if the player get a Pot, move the pot above player head
-    if self.player.havePot then
-        for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
-            if object.lifted then
-                Timer.tween(0.3, {
-                    [object] = {x = self.player.x, y = self.player.y + 22 - 32},
-                })
-                break
-            end
-        end
-    end
-
     -- if we've fully elapsed through one cycle of animation, change back to idle state
     if self.player.currentAnimation.timesPlayed > 0 then
         self.player.currentAnimation.timesPlayed = 0

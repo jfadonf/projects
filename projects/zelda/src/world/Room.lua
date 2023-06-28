@@ -173,7 +173,7 @@ function Room:update(dt)
     for i = #self.entities, 1, -1 do
         local entity = self.entities[i]
 
-        -- remove entity from the table if health is <= 0
+        -- mark entities whose health <= 0 with dead lebal
         if entity.health <= 0 and not entity.dead then
             entity.dead = true
             -- possible to have heart dropped
@@ -255,7 +255,11 @@ function Room:render()
     end
 
     for k, object in pairs(self.objects) do
-        object:render(self.adjacentOffsetX, self.adjacentOffsetY)
+        if not object.lifted then
+            object:render(self.adjacentOffsetX, self.adjacentOffsetY)
+        else
+            self.objLifted = k
+        end
     end
 
     for k, entity in pairs(self.entities) do
@@ -286,6 +290,11 @@ function Room:render()
     
     if self.player then
         self.player:render()
+    end
+
+    -- draw lifted object if there is
+    if self.objLifted then
+        self.objects[self.objLifted]:render(self.adjacentOffsetX, self.adjacentOffsetY)
     end
 
     love.graphics.setStencilTest()

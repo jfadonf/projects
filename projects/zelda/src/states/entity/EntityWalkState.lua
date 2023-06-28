@@ -37,7 +37,7 @@ function EntityWalkState:update(dt)
 
         --  if a pot is on the left side, bolck entity's movement
         for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
-            if object.type == 'pot' and self.entity:collides(object) then
+            if object.type == 'pot' and not object.lifted and self.entity:collides(object) then
                 self.entity.x = object.x + object.width + 0.5
                 break
             end
@@ -53,7 +53,7 @@ function EntityWalkState:update(dt)
 
         --  if a pot is on the right side, bolck entity's movement
         for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
-            if object.type == 'pot' and self.entity:collides(object) then
+            if object.type == 'pot' and not object.lifted and self.entity:collides(object) then
                 self.entity.x = object.x - self.entity.width - 0.5
                 break
             end
@@ -69,7 +69,7 @@ function EntityWalkState:update(dt)
 
         --  if a pot is on the upper side, bolck entity's movement
         for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
-            if object.type == 'pot' and self.entity:collides(object) then
+            if object.type == 'pot' and not object.lifted and self.entity:collides(object) then
                 self.entity.y = object.y + 5.5
                 break
             end
@@ -88,7 +88,7 @@ function EntityWalkState:update(dt)
 
         --  if a pot is on the down side, bolck entity's movement
         for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
-            if object.type == 'pot' and self.entity:collides(object) then
+            if object.type == 'pot' and not object.lifted and self.entity:collides(object) then
                 self.entity.y = object.y - self.entity.height - 0.5
                 break
             end

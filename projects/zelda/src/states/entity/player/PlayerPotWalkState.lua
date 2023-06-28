@@ -6,9 +6,9 @@
     cogden@cs50.harvard.edu
 ]]
 
-PlayerWalkState = Class{__includes = EntityWalkState}
+PlayerPotWalkState = Class{__includes = EntityWalkState}
 
-function PlayerWalkState:init(player, dungeon)
+function PlayerPotWalkState:init(player, dungeon)
     self.entity = player
     self.dungeon = dungeon
 
@@ -17,7 +17,7 @@ function PlayerWalkState:init(player, dungeon)
     self.entity.offsetX = 0
 end
 
-function PlayerWalkState:update(dt)
+function PlayerPotWalkState:update(dt)
     if love.keyboard.isDown('left') then
         self.entity.direction = 'left'
         self.entity:changeAnimation('walk-left')
@@ -34,16 +34,8 @@ function PlayerWalkState:update(dt)
         self.entity:changeState('idle')
     end
 
-    if love.keyboard.wasPressed('space') and not self.entity.havePot then
-        self.entity:changeState('swing-sword')
-    end
-
     if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
-        if self.entity.havePot then
-            -- changeState to idle and throw the pot
-        else
-            self.entity:changeState('pot-lift')
-        end
+        self.entity:changeState('idle')
     end
 
     -- perform base collision detection against walls

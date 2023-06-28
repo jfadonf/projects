@@ -33,6 +33,9 @@ function Room:init(player)
     -- reference to player for collisions, etc.
     self.player = player
 
+    -- when entering a room, take the pot away from player 
+    self.player.havePot = false
+
     -- used for centering the dungeon rendering
     self.renderOffsetX = MAP_RENDER_OFFSET_X
     self.renderOffsetY = MAP_RENDER_OFFSET_Y
@@ -212,11 +215,18 @@ function Room:update(dt)
     end
         
     for k, object in pairs(self.objects) do
-        object:update(dt)
+        -- make the lifted object follow the player and ignore the collision check
+        if object.lifted then
+            object.x = self.player.x
+            object.y = self.player.y + 22 - 32
+            object:update(dt)
 
         -- trigger collision callback on object
-        if self.player:collides(object) then
-            object:onCollide()
+        else
+            object:update(dt)
+            if self.player:collides(object) then
+                object:onCollide()
+            end
         end
     end
 

@@ -21,7 +21,15 @@ function PlayerIdleState:update(dt)
         self.entity:changeState('walk')
     end
 
-    if love.keyboard.wasPressed('space') then
+    if love.keyboard.wasPressed('space') and not self.entity.havePot then
         self.entity:changeState('swing-sword')
+    end
+
+    if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
+        if self.entity.havePot then
+            -- changeState to idle and throw the pot
+        else
+            self.entity:changeState('pot-lift')
+        end
     end
 end

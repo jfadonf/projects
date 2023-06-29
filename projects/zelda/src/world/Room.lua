@@ -250,7 +250,6 @@ function Room:update(dt)
 
             -- collide with entities
             else
-                print(#self.entities)
                 for k, entity in pairs(self.entities) do
                     if entity:collides(object) then
                         entity:damage(1)

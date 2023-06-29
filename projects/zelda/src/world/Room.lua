@@ -168,8 +168,10 @@ function Room:update(dt)
     -- don't update anything if we are sliding to another room (we have offsets)
     if self.adjacentOffsetX ~= 0 or self.adjacentOffsetY ~= 0 then return end
 
+    -- update player
     self.player:update(dt)
 
+    -- update entities
     for i = #self.entities, 1, -1 do
         local entity = self.entities[i]
 
@@ -186,8 +188,8 @@ function Room:update(dt)
 
                 -- define a function for the heart that will cure the player
                 heartObj.onCollide = function()
-                    -- mark the heartObj with istaken label
-                    heartObj.istaken = true
+                    -- mark the heartObj with isTaken label
+                    heartObj.isTaken = true
 
                     -- cure player
                     self.player.health = math.min(self.player.health + 2, 6)
@@ -214,31 +216,64 @@ function Room:update(dt)
         end
     end
         
+    -- update the objects
     for k, object in pairs(self.objects) do
-        -- make the lifted object follow the player and ignore the collision check
+        -- lifted object: follow player and ignore collision check
         if object.lifted then
             object.x = self.player.x
             object.y = self.player.y + 22 - 32
-            object:update(dt)
 
-        -- trigger collision callback on object
-        else
-            object:update(dt)
-            if self.player:collides(object) then
-                object:onCollide()
+        -- projectile object: go forward 4 tiles 
+        elseif object.type == 'projectile' then
+            -- go forward 4 tiles
+            if object.direction == 'left' then
+                object.x = object.x - 80 * dt
+            elseif object.direction == 'right' then
+                object.x = object.x + 80 * dt
+            elseif object.direction == 'up' then
+                object.y = object.y - 80 * dt
+            elseif object.direction == 'down' then
+                object.y = object.y + 80 * dt
             end
+
+            -- reach the range?
+            if math.abs(object.x0 - object.x) >= 16 * 3 
+            or math.abs(object.y0 - object.y) >= 16 * 3 then
+                object.isTaken = true
+        
+            -- hit the wall
+            elseif object.x <= MAP_RENDER_OFFSET_X + 8
+            or object.x >= MAP_WIDTH * 16 + MAP_RENDER_OFFSET_X - 24
+            or object.y <= MAP_RENDER_OFFSET_Y + 8
+            or object.y >= MAP_HEIGHT * 16 + MAP_RENDER_OFFSET_Y - 24 then
+                object.isTaken = true
+
+            -- collide with entities
+            else
+                print(#self.entities)
+                for k, entity in pairs(self.entities) do
+                    if entity:collides(object) then
+                        entity:damage(1)
+                        object.isTaken = true
+                    end
+                end
+            end
+        elseif self.player:collides(object) then
+            object:onCollide()
         end
     end
 
-    -- remove the heartObj which is taken from objects table
+    -- remove the Obj which is taken from objects table
     for i = #self.objects, 1, -1 do
-        if self.objects[i].istaken then
+        if self.objects[i].isTaken then
             table.remove(self.objects, i)
         end
     end
 end
 
+
 function Room:render()
+    -- render tiles
     for y = 1, self.height do
         for x = 1, self.width do
             local tile = self.tiles[y][x]
@@ -254,6 +289,7 @@ function Room:render()
         doorway:render(self.adjacentOffsetX, self.adjacentOffsetY)
     end
 
+    -- render objects
     for k, object in pairs(self.objects) do
         if not object.lifted then
             object:render(self.adjacentOffsetX, self.adjacentOffsetY)
@@ -262,6 +298,7 @@ function Room:render()
         end
     end
 
+    -- render entities
     for k, entity in pairs(self.entities) do
         if not entity.dead then entity:render(self.adjacentOffsetX, self.adjacentOffsetY) end
     end
@@ -295,6 +332,7 @@ function Room:render()
     -- draw lifted object if there is
     if self.objLifted then
         self.objects[self.objLifted]:render(self.adjacentOffsetX, self.adjacentOffsetY)
+        self.objLifted = false
     end
 
     love.graphics.setStencilTest()

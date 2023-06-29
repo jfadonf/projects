@@ -39,8 +39,8 @@ function PlayerPotLiftState:enter(params)
         -- collision detection with the pots
         for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
             if object.type == 'pot' and self.player:collides(object) then
-                Timer.tween(0.8, {
-                    [object] = {x = self.player.x, y = self.player.y + 22 - 32},
+                Timer.tween(0.6, {
+                    [object] = {x = self.player.x, y = self.player.y + 22 - 32}
                 })
                 :finish(function()
                     gStateMachine.current.dungeon.currentRoom.objects[k].lifted = true
@@ -58,7 +58,7 @@ function PlayerPotLiftState:enter(params)
         -- collision detection with the pots
         for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
             if object.type == 'pot' and self.player:collides(object) then
-                Timer.tween(0.8, {
+                Timer.tween(0.6, {
                     [object] = {x = self.player.x, y = self.player.y + 22 - 32},
                 })
                 :finish(function()
@@ -77,7 +77,7 @@ function PlayerPotLiftState:enter(params)
         -- collision detection with the pots
         for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
             if object.type == 'pot' and self.player:collides(object) then
-                Timer.tween(0.8, {
+                Timer.tween(0.6, {
                     [object] = {x = self.player.x, y = self.player.y + 22 - 32},
                 })
                 :finish(function()
@@ -96,7 +96,7 @@ function PlayerPotLiftState:enter(params)
         -- collision detection with the pots
         for k, object in pairs(gStateMachine.current.dungeon.currentRoom.objects) do
             if object.type == 'pot' and self.player:collides(object) then
-                Timer.tween(0.8, {
+                Timer.tween(0.6, {
                     [object] = {x = self.player.x, y = self.player.y + 22 - 32},
                 })
                 :finish(function()

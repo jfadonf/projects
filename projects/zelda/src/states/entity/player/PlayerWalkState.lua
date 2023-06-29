@@ -39,7 +39,7 @@ function PlayerWalkState:update(dt)
         -- throw a pot
         if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
             -- changeState to idle and throw the pot
-
+            self.entity.changeState('pot-drop')
         end
     else
         -- directions

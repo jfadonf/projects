@@ -20,7 +20,7 @@ function GameObject:init(def, x, y)
     self.solid = def.solid
 
     -- whether it is taken or not
-    self.istaken = def.istaken
+    self.isTaken = def.isTaken
 
     self.defaultState = def.defaultState
     self.state = self.defaultState
@@ -33,11 +33,16 @@ function GameObject:init(def, x, y)
     self.height = def.height
 
     -- default empty collision callback
-    self.onCollide = function() end
+    if self.type == 'projectile' then
+        self.onCollide = function()
+            self.isTaken = true
+        end
+    else
+        self.onCollide = function() end
+    end
 end
 
 function GameObject:update(dt)
-
 end
 
 function GameObject:render(adjacentOffsetX, adjacentOffsetY)

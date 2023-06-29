@@ -106,6 +106,30 @@ ENTITY_DEFS = {
                 frames = {9},
                 texture = 'character-pot-walk'
             },
+            ['drop-pot-left'] = {
+                frames = {12, 11, 10},
+                interval = 0.1,
+                looping = false,
+                texture = 'character-pot-lift'
+            },
+            ['drop-pot-right'] = {
+                frames = {6, 5, 4},
+                interval = 0.1,
+                looping = false,
+                texture = 'character-pot-lift'
+            },
+            ['drop-pot-down'] = {
+                frames = {3, 2, 1},
+                interval = 0.1,
+                looping = false,
+                texture = 'character-pot-lift'
+            },
+            ['drop-pot-up'] = {
+                frames = {9, 8, 7},
+                interval = 0.1,
+                looping = false,
+                texture = 'character-pot-lift'
+            },
             ['lift-pot-left'] = {
                 frames = {10, 11, 12},
                 interval = 0.2,

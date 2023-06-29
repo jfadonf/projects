@@ -18,9 +18,12 @@ function PlayerIdleState:enter(params)
     if self.entity.havePot then
         self.entity:changeAnimation('pot-idle-' .. self.entity.direction)
     end
+    -- show the pot lift posture of player
+    self.entity.currentAnimation:refresh()
 end
 
 function PlayerIdleState:update(dt)
+    -- if the player have a pot
     if self.entity.havePot then
         -- directions
         if love.keyboard.isDown('left') or love.keyboard.isDown('right') or
@@ -29,16 +32,17 @@ function PlayerIdleState:update(dt)
         end
 
         if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
-            -- throw the pot and change the player state to idle without pot
+            self.entity:changeState('pot-drop')
         end
 
+    -- if the player have not a pot
     else
         if love.keyboard.isDown('left') or love.keyboard.isDown('right') or
            love.keyboard.isDown('up') or love.keyboard.isDown('down') then
             self.entity:changeState('walk')
         end
 
-        if love.keyboard.wasPressed('space') and not self.entity.havePot then
+        if love.keyboard.wasPressed('space') then
             self.entity:changeState('swing-sword')
         end
 

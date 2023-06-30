@@ -18,6 +18,7 @@ function PlayerWalkState:init(player, dungeon)
 end
 
 function PlayerWalkState:update(dt)
+    -- if the player have a pot
     if self.entity.havePot then
         -- directions
         if love.keyboard.isDown('left') then
@@ -38,9 +39,11 @@ function PlayerWalkState:update(dt)
 
         -- throw a pot
         if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
-            -- changeState to idle and throw the pot
-            self.entity.changeState('pot-drop')
+            -- changeState to drop the pot
+            self.entity:changeState('pot-drop')
         end
+
+    -- the player have not pot
     else
         -- directions
         if love.keyboard.isDown('left') then

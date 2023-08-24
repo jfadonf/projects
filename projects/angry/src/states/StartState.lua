@@ -10,11 +10,15 @@ StartState = Class{__includes = BaseState}
 
 function StartState:init()
     self.background = Background()
+    -- define the gravities both vertical and horizontal
     self.world = love.physics.newWorld(0, 300)
 
     -- ground
+    -- define a body in the world, (to which world the groundBody belongs, the coordinate it is placed at, type)
     self.groundBody = love.physics.newBody(self.world, 0, VIRTUAL_HEIGHT, 'static')
+    -- define the shape of the body, this is a line
     self.groundShape = love.physics.newEdgeShape(0, 0, VIRTUAL_WIDTH, 0)
+    -- define the fixture with body and shape
     self.groundFixture = love.physics.newFixture(self.groundBody, self.groundShape)
 
     -- walls

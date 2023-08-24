@@ -11,7 +11,7 @@ Level = Class{}
 function Level:init()
     
     -- create a new "world" (where physics take place), with no x gravity
-    -- and 30 units of Y gravity (for downward force)
+    -- and 300 units of Y gravity (for downward force)
     self.world = love.physics.newWorld(0, 300)
 
     -- bodies we will destroy after the world update cycle; destroying these in the

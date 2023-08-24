@@ -78,5 +78,5 @@ gFonts = {
     ['huge'] = love.graphics.newFont('fonts/font.ttf', 64)
 }
 
--- tweak circular alien quad
+-- tweak circular alien quad: to eliminate the borders from the adjacent quads
 gFrames['aliens'][9]:setViewport(105.5, 35.5, 35, 34.2)

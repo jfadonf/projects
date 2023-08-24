@@ -8,6 +8,7 @@
 
 AlienLaunchMarker = Class{}
 
+-- to init a alienlaunchmarker, a world must be given
 function AlienLaunchMarker:init(world)
     self.world = world
 
@@ -49,6 +50,7 @@ function AlienLaunchMarker:update(dt)
             self.alien = Alien(self.world, 'round', self.shiftedX, self.shiftedY, 'Player')
 
             -- apply the difference between current X,Y and base X,Y as launch vector impulse
+            -- apppy the speed of alien
             self.alien.body:setLinearVelocity((self.baseX - self.shiftedX) * 10, (self.baseY - self.shiftedY) * 10)
 
             -- make the alien pretty bouncy

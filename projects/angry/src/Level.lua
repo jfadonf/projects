@@ -21,12 +21,15 @@ function Level:init()
     -- define collision callbacks for our world; the World object expects four,
     -- one for different stages of any given collision
     function beginContact(a, b, coll)
+
         local types = {}
         types[a:getUserData()] = true
         types[b:getUserData()] = true
 
         -- if we collided between both the player and an obstacle...
         if types['Obstacle'] and types['Player'] then
+            -- tell launchMarker there is a contact
+            self.launchMarker.touched = true
 
             -- grab the body that belongs to the player
             local playerFixture = a:getUserData() == 'Player' and a or b
@@ -59,6 +62,8 @@ function Level:init()
 
         -- if we collided between the player and the alien...
         if types['Player'] and types['Alien'] then
+            -- tell launchMarker there is a contact
+            self.launchMarker.touched = true
 
             -- grab the bodies that belong to the player and alien
             local playerFixture = a:getUserData() == 'Player' and a or b
@@ -75,6 +80,9 @@ function Level:init()
 
         -- if we hit the ground, play a bounce sound
         if types['Player'] and types['Ground'] then
+            -- tell launchMarker there is a contact
+            self.launchMarker.touched = true
+
             gSounds['bounce']:stop()
             gSounds['bounce']:play()
         end
@@ -108,7 +116,7 @@ function Level:init()
     self.obstacles = {}
 
     -- simple edge shape to represent collision for ground
-    self.edgeShape = love.physics.newEdgeShape(0, 0, VIRTUAL_WIDTH * 3, 0)
+    self.edgeShape = love.physics.newEdgeShape(0, 0, VIRTUAL_WIDTH * 6, 0)
 
     -- spawn an alien to try and destroy
     table.insert(self.aliens, Alien(self.world, 'square', VIRTUAL_WIDTH - 80, VIRTUAL_HEIGHT - TILE_SIZE - ALIEN_SIZE / 2, 'Alien'))
@@ -175,14 +183,38 @@ function Level:update(dt)
         local xPos, yPos = self.launchMarker.alien.body:getPosition()
         local xVel, yVel = self.launchMarker.alien.body:getLinearVelocity()
         
-        -- if we fired our alien to the left or it's almost done rolling, respawn
-        if xPos < 0 or (math.abs(xVel) + math.abs(yVel) < 1.5) then
-            self.launchMarker.alien.body:destroy()
-            self.launchMarker = AlienLaunchMarker(self.world)
+        -- if the player alien was split?
+        if self.launchMarker.split then
+            -- get the velocity of the split aliens
+            local xVel1, yVel1 = self.launchMarker.alien_1.body:getLinearVelocity()
+            local xVel2, yVel2 = self.launchMarker.alien_2.body:getLinearVelocity()
 
-            -- re-initialize level if we have no more aliens
-            if #self.aliens == 0 then
-                gStateMachine:change('start')
+            -- if we fired our alien to the left or three aliens are almost done rolling, respawn
+            if xPos < 0 
+               or ((math.abs(xVel) + math.abs(yVel) < 1.5)
+              and (math.abs(xVel1) + math.abs(yVel1) < 1.5)
+              and (math.abs(xVel2) + math.abs(yVel2) < 1.5)) then
+                self.launchMarker.alien.body:destroy()
+                self.launchMarker.alien_1.body:destroy()
+                self.launchMarker.alien_2.body:destroy()
+                self.launchMarker = AlienLaunchMarker(self.world)
+
+                -- re-initialize level if we have no more aliens
+                if #self.aliens == 0 then
+                    gStateMachine:change('start')
+                end
+            end
+        -- if the player alien was not split
+        else
+            -- if we fired our alien to the left or it's almost done rolling, respawn
+            if xPos < 0 or (math.abs(xVel) + math.abs(yVel) < 1.5) then
+                self.launchMarker.alien.body:destroy()
+                self.launchMarker = AlienLaunchMarker(self.world)
+
+                -- re-initialize level if we have no more aliens
+                if #self.aliens == 0 then
+                    gStateMachine:change('start')
+                end
             end
         end
     end

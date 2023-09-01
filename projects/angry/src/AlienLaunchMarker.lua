@@ -26,8 +26,18 @@ function AlienLaunchMarker:init(world)
     -- whether we launched the alien and should stop rendering the preview
     self.launched = false
 
+    -- whether we split the alien
+    self.split = false
+
+    -- whether the player touched any thing
+    self.touched = false
+
     -- our alien we will eventually spawn
     self.alien = nil
+
+    -- splitted aliens
+    self.alien_1 = nil
+    self.alien_2 = nil
 end
 
 function AlienLaunchMarker:update(dt)
@@ -65,6 +75,42 @@ function AlienLaunchMarker:update(dt)
             
             self.shiftedX = math.min(self.baseX + 30, math.max(x, self.baseX - 30))
             self.shiftedY = math.min(self.baseY + 30, math.max(y, self.baseY - 30))
+        end
+
+    -- deal with the flight and split when player was launched
+    else
+        -- check if the space key was pressed
+        if (not self.touched) and love.keyboard.wasPressed('space') and (not self.split) then
+            self.split = true
+            -- get the position of the player
+            local posX, posY = self.alien.body:getPosition()
+            -- get the velocity of the player
+            local velX, velY = self.alien.body:getLinearVelocity()
+            local velocity = math.sqrt(velX * velX + velY * velY)
+            -- angle of the origin
+            local angle_origin = math.atan2(velY, velX)
+            -- angle of the split
+            local angle_1 = angle_origin + math.rad(30)
+            local angle_2 = angle_origin - math.rad(30)
+            -- velx, vely of split1
+            local velX1 = velocity * math.cos(angle_1)
+            local velY1 = velocity * math.sin(angle_1)
+            -- velx, vely of split2
+            local velX2 = velocity * math.cos(angle_2)
+            local velY2 = velocity * math.sin(angle_2)
+
+            -- split the player
+            self.alien_1 = Alien(self.world, 'round', posX, posY, 'Player')
+            self.alien_2 = Alien(self.world, 'round', posX, posY, 'Player')
+            self.alien_1.body:setLinearVelocity(velX1, velY1)
+            self.alien_2.body:setLinearVelocity(velX2, velY2)
+
+            -- make the alien pretty bouncy
+            self.alien_1.fixture:setRestitution(0.4)
+            self.alien_1.body:setAngularDamping(1)
+            
+            self.alien_2.fixture:setRestitution(0.4)
+            self.alien_2.body:setAngularDamping(1)
         end
     end
 end
@@ -106,5 +152,11 @@ function AlienLaunchMarker:render()
         love.graphics.setColor(1, 1, 1, 1)
     else
         self.alien:render()
+        if self.alien_1 then
+            self.alien_1:render()
+        end
+        if self.alien_2 then
+            self.alien_2:render()
+        end
     end
 end

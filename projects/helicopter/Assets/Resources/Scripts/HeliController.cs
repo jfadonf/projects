@@ -53,6 +53,14 @@ public class HeliController : MonoBehaviour {
 		rb.velocity = new Vector3(horizontal, vertical, 0);
 	}
 
+	public void PickupGem() {
+		coinTotal += 5;
+
+		// trigger audio playback and emit particles from particle system
+		GetComponents<AudioSource>()[0].Play();
+		GetComponent<ParticleSystem>().Play();
+	}
+
 	public void PickupCoin() {
 		coinTotal += 1;
 
@@ -71,3 +79,4 @@ public class HeliController : MonoBehaviour {
 		Destroy(gameObject);
 	}
 }
+

@@ -18,6 +18,6 @@ public class MazeText : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        mazeText.text = "Score: " + LoadSceneOnInput.mazeNumber; 
+        mazeText.text = "Level: " + LoadSceneOnInput.mazeNumber; 
     }
 }

@@ -151,14 +151,17 @@ function LevelMaker.createMap(level)
     powerupQuantity = math.min(brickQuantity, powerupQuantity)
     local powerupset = PickRandomItems(brickQuantity, powerupQuantity)
 
-    -- set the first random powerup to be the key powerup
-    powerups[powerupset[1]].kind = 10
+    -- get the 10 powerups active
     for i = 1, powerupQuantity do
         powerups[powerupset[i]].inPlay = true
     end
     
     -- if it is a Locked Brick Level then
     if math.random(LBL_DENSITY) == 1 then
+
+        -- set the first random powerup to be the key powerup
+        powerups[powerupset[1]].kind = 10
+
         -- set a random brick to be locked, but not the one cover the key powerup
         local lockedBrick = math.random(brickQuantity)
         while lockedBrick == powerupset[1] do

@@ -131,9 +131,11 @@ function PlayState:update(dt)
 
                 -- go to our victory screen if there are no more bricks left
                 brickLeft, brickLeftPosition, powerupLeft = self:checkVictory()
-                -- if the last brick is locked and the paddle hasn't key then give an extra key powerup when hit
--- and self.bricks[brickLeftPosition].islocked
-                    if brickLeft == 1 and powerupLeft == 0 then
+
+                -- if the last brick is locked and the paddle hasn't key 
+                -- then give an extra key powerup when hit
+                if brickLeft == 1 and powerupLeft == 0 and self.bricks[brickLeftPosition].islocked
+then
                     -- provide a brick and a key powerup at the locked brick
                     local p = Powerup(
                         self.bricks[brickLeftPosition].x + 8,

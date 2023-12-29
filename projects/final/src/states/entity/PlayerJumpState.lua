@@ -28,8 +28,12 @@ end
 function PlayerJumpState:update(dt)
     self.player.currentAnimation:update(dt)
     self.player.dy = math.min(300, self.player.dy + self.gravity)
-    self.player.y = self.player.y + (self.player.dy * dt)
 
+    -- if there is platform above the player, block player
+    if not self.player:isPlatformAbove() then
+        self.player.y = self.player.y + (self.player.dy * dt)
+    end
+        
     -- go into the falling state when y velocity is positive
     if self.player.dy >= 0 then
         self.player:changeState('falling')

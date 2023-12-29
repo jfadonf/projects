@@ -26,6 +26,12 @@ function PlayerIdleState:update(dt)
         self.player:changeState('right')
     elseif love.keyboard.wasPressed(JUMP_KEY) then
         self.player:changeState('jump')
+    elseif love.keyboard.isDown(DOWN_KEY) then
+        if self.player:isPlatformUnder() then
+            self.player.y = self.player.y + 80 * dt
+        else
+            self.player:changeState('falling')
+        end  
     end
 
     -- check if we've collided with any entities and die if so

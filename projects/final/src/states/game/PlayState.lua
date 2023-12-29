@@ -80,7 +80,7 @@ function PlayState:enter(params)
     -- bakeTime intervals for forts
     self.bakeTimeInterval = {}
     for i = 1, #self.level.forts do
-        table.insert(self.bakeTimeInterval, math.random(2, 9))
+        table.insert(self.bakeTimeInterval, math.random(30, 100) / 10)
     end
 
     -- make cakes in cakes

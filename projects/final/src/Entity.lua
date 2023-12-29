@@ -52,6 +52,19 @@ function Entity:render()
 end
 
 
+-- whether there is a platform pixel in the line above the player
+function Entity:isPlatformAbove()
+    local checkLine = false
+
+    for x = 1, self.width do
+        local xfloor = math.floor(self.x)
+        local yfloor = math.floor(self.y)
+        checkLine = (checkLine or (self.level.platforms[xfloor + x - 1][yfloor] == 1))
+    end
+    
+    return checkLine
+end
+
 -- whether there is a platform pixel in the line under the player
 function Entity:isPlatformUnder()
     local checkLine = false

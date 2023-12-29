@@ -51,7 +51,7 @@ function CakeChasingState:update(dt)
         self.cake.dx = CAKE_SPEED * math.cos(self.cake.angle)
         self.cake.dy = CAKE_SPEED * math.sin(self.cake.angle)
         
-        if 0 < self.localTimer and self.localTimer < 3 then
+        if 0 < self.localTimer and self.localTimer < 2 then
 
             -- move along axis X and Y
             self.cake.x = self.cake.x + self.cake.dx * dt

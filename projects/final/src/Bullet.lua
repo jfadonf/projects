@@ -76,8 +76,10 @@ function Bullet:update(dt)
     self.diffY = self.diffY + self.vy * dt
 
     -- if bullets exceed the max distance, delete them.
-    if math.abs(self.diffX) > gStateMachine.current.level.width or math.abs(self.diffY) > gStateMachine.current.level.height then
-        self.HP = 0
+    if not (gStateMachine.current.level) == nil then
+        if math.abs(self.diffX) > gStateMachine.current.level.width or math.abs(self.diffY) > gStateMachine.current.level.height then
+            self.HP = 0
+        end
     end
 end
 
@@ -86,13 +88,13 @@ function Bullet:render()
     love.graphics.setColor(128/255, 0, 128/255)
 
     -- Draw a filled square at position (x, y) with a width and height of 100
-    love.graphics.rectangle("fill", self.x + CUBE_SIZE / 2 - self.width / 2, self.y + CUBE_SIZE / 2 - self.height / 2, self.width, self.height)
+    love.graphics.rectangle("fill", self.x + CUBE_SIZE / 2 - self.width / 2, self.y + CUBE_SIZE / 2 - self.height / 2, self.width, self.height, 2, 2)
 
     -- set color
     love.graphics.setColor(255/255, 223/255, 0)
     
     -- Draw a filled square at position (x, y) with a width and height of 100
-    love.graphics.rectangle("line", self.x + CUBE_SIZE / 2 - self.width / 2, self.y + CUBE_SIZE / 2 - self.height / 2, self.width, self.height)
+    love.graphics.rectangle("line", self.x + CUBE_SIZE / 2 - self.width / 2, self.y + CUBE_SIZE / 2 - self.height / 2, self.width, self.height, 2, 2)
     
     -- set color
     love.graphics.setColor(1, 1, 1)
